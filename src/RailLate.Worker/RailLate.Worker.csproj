@@ -6,4 +6,17 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="GTFS" Version="3.0.0-pre006" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Data\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\RailLate.Infrastructure\RailLate.Infrastructure.csproj" />
+    </ItemGroup>
+
 </Project>
