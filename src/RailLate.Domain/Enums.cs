@@ -2,6 +2,7 @@ namespace RailLate.Domain;
 
 public static class Enums
 {
+    
     public enum PaymentMethodType
     {
         OnBoard,

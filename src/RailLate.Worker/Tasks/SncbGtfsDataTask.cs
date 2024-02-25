@@ -2,21 +2,23 @@ using System.Reflection;
 using System.Reflection.Metadata;
 using GTFS;
 
-namespace RailLate.Worker.Services;
+namespace RailLate.Worker.Tasks;
 
-public interface ISncbGtfsDataService
+public interface ISncbGtfsDataTask : IPeriodicTask
 {
     public Task<GTFSFeed> GetPlanningDataAsync(CancellationToken cancellationToken);
 }
 
-public class SncbGtfsDataService : ISncbGtfsDataService
+public class SncbGtfsDataTask : ISncbGtfsDataTask
 {
     private readonly string _gtfsFolderPath = "Data";
     private readonly string _sncbGtfsUrl =
         "https://sncb-opendata.hafas.de/gtfs/static/c21ac6758dd25af84cca5b707f3cb3de";
     private readonly HttpClient _httpClient = new();
+    
+    public bool IsEnabled { get; set; }
 
-    public SncbGtfsDataService()
+    public SncbGtfsDataTask()
     {
         _gtfsFolderPath = Path.GetFullPath(Path.Combine(AssemblyReference.Assembly.Location, "../../../../../", "RailLate.Worker", "Data"));
     }
@@ -54,5 +56,10 @@ public class SncbGtfsDataService : ISncbGtfsDataService
         }
 
         return zipFilePath;
+    }
+
+    public async Task ExecuteTaskAsync(CancellationToken stoppingToken)
+    {
+        await GetPlanningDataAsync(stoppingToken);
     }
 }
