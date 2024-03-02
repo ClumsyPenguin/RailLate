@@ -40,13 +40,13 @@ public class Stop : GtfsEntity
     public string ParentStation { get; set; }
     
     [Column("stop_timezone")]
-    public string Timezone { get; set; }
+    public string? Timezone { get; set; }
     
     [Column(" wheelchair_boarding ")]
-    public string WheelchairBoarding { get; set; }
+    public string? WheelchairBoarding { get; set; }
 
     [Column("level_id")]
-    public string LevelId { get; set; }
+    public string? LevelId { get; set; }
     
     [Column("platform_code")]
     public string PlatformCode { get; set; }

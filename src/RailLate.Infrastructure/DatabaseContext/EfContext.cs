@@ -16,11 +16,7 @@ public class EfContext : DbContext
     public DbSet<FareAttribute> FareAttributes { get; set; }
     public DbSet<FareRule> FareRules { get; set; }
     public DbSet<FeedInfo> FeedInfos { get; set; }
-    public DbSet<Frequency> Frequencies { get; set; }
-    public DbSet<Level> Levels { get; set; }
-    public DbSet<Pathway> Pathways { get; set; }
     public DbSet<Route> Routes { get; set; }
-    public DbSet<Shape> Shapes { get; set; }
     public DbSet<Stop> Stops { get; set; }
     public DbSet<StopTime> StopTimes { get; set; }
     public DbSet<Transfer> Transfers { get; set; }

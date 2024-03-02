@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RailLate.Infrastructure.DatabaseContext;
 
@@ -11,9 +12,11 @@ using RailLate.Infrastructure.DatabaseContext;
 namespace RailLate.Infrastructure.Migrations
 {
     [DbContext(typeof(EfContext))]
-    partial class EfContextModelSnapshot : ModelSnapshot
+    [Migration("20240302205218_NullableFields")]
+    partial class NullableFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -276,6 +279,91 @@ namespace RailLate.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("FeedInfos");
+                });
+
+            modelBuilder.Entity("RailLate.Domain.Entities.Level", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("level_id");
+
+                    b.Property<double>("Index")
+                        .HasColumnType("float")
+                        .HasColumnName("level_index");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("level_name");
+
+                    b.Property<string>("Tag")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Levels");
+                });
+
+            modelBuilder.Entity("RailLate.Domain.Entities.Pathway", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("pathway_id");
+
+                    b.Property<string>("FromStopId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("from_stop_id");
+
+                    b.Property<int>("IsBidirectional")
+                        .HasColumnType("int")
+                        .HasColumnName("is_bidirectional");
+
+                    b.Property<double?>("Length")
+                        .HasColumnType("float")
+                        .HasColumnName("length");
+
+                    b.Property<double?>("MaxSlope")
+                        .HasColumnType("float")
+                        .HasColumnName("max_slope");
+
+                    b.Property<double?>("MinWidth")
+                        .HasColumnType("float")
+                        .HasColumnName("min_width");
+
+                    b.Property<int>("PathwayMode")
+                        .HasColumnType("int")
+                        .HasColumnName("pathway_mode");
+
+                    b.Property<string>("ReversedSignpostedAs")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("reversed_signposted_as");
+
+                    b.Property<string>("SignpostedAs")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("signposted_as");
+
+                    b.Property<int?>("StairCount")
+                        .HasColumnType("int")
+                        .HasColumnName("stair_count");
+
+                    b.Property<string>("Tag")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ToStopId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("to_stop_id");
+
+                    b.Property<int?>("TraversalTime")
+                        .HasColumnType("int")
+                        .HasColumnName("traversal_time");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Pathways");
                 });
 
             modelBuilder.Entity("RailLate.Domain.Entities.Route", b =>

@@ -1,4 +1,6 @@
 using AspNetCoreRateLimit;
+using Mapster;
+using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using RailLate.Infrastructure;
@@ -16,16 +18,18 @@ builder.Services.AddCors(p => p.AddPolicy("cors-app", corsPolicyBuilder =>
     corsPolicyBuilder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }));
 
+builder.Services.AddSingleton<IMapper, Mapper>();
+
 builder.Services.AddSingleton<ITaskService, TaskService>();
 
-builder.Services.AddSingleton<ISncbGtfsDataTask, SncbGtfsDataTask>();
+builder.Services.AddSingleton<IGtfsDataTask, GtfsDataTask>();
 builder.Services.AddSingleton<ISqlSyncTask, SqlSyncTask>();
-builder.Services.AddSingleton<IPeriodicTask>(provider => provider.GetRequiredService<ISncbGtfsDataTask>());
+builder.Services.AddSingleton<IPeriodicTask>(provider => provider.GetRequiredService<IGtfsDataTask>());
 builder.Services.AddSingleton<IPeriodicTask>(provider => provider.GetRequiredService<ISqlSyncTask>());
 
-builder.Services.AddSingleton<PeriodicHostedWorker<ISncbGtfsDataTask>>();
+builder.Services.AddSingleton<PeriodicHostedWorker<IGtfsDataTask>>();
 builder.Services.AddSingleton<PeriodicHostedWorker<ISqlSyncTask>>();
-builder.Services.AddHostedService(provider => provider.GetRequiredService<PeriodicHostedWorker<ISncbGtfsDataTask>>());
+builder.Services.AddHostedService(provider => provider.GetRequiredService<PeriodicHostedWorker<IGtfsDataTask>>());
 builder.Services.AddHostedService(provider => provider.GetRequiredService<PeriodicHostedWorker<ISqlSyncTask>>());
 
 builder.Services.AddSingleton<ITaskManager>(provider =>
@@ -52,7 +56,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger();
 
-builder.Services.AddAutoMapper(RailLate.REST.AssemblyReference.Assembly);
 builder.Services.AddMediatR(cfg => 
     cfg.RegisterServicesFromAssembly(RailLate.Application.AssemblyReference.Assembly));
 

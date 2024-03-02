@@ -4,12 +4,12 @@ using GTFS;
 
 namespace RailLate.Worker.Tasks;
 
-public interface ISncbGtfsDataTask : IPeriodicTask
+public interface IGtfsDataTask : IPeriodicTask
 {
-    public Task<GTFSFeed> GetPlanningDataAsync(CancellationToken cancellationToken);
+    public Task<string> DownloadFeedAsync(string feedUrl, CancellationToken cancellationToken);
 }
 
-public class SncbGtfsDataTask : ISncbGtfsDataTask
+public class GtfsDataTask : IGtfsDataTask
 {
     private readonly string _gtfsFolderPath = "Data";
     private readonly string _sncbGtfsUrl =
@@ -18,20 +18,12 @@ public class SncbGtfsDataTask : ISncbGtfsDataTask
     
     public bool IsEnabled { get; set; }
 
-    public SncbGtfsDataTask()
+    public GtfsDataTask()
     {
         _gtfsFolderPath = Path.GetFullPath(Path.Combine(AssemblyReference.Assembly.Location, "../../../../../", "RailLate.Worker", "Data"));
     }
     
-    public async Task<GTFSFeed> GetPlanningDataAsync(CancellationToken cancellationToken)
-    {
-        var zipFilePath = await DownloadFeedAsync(_sncbGtfsUrl, cancellationToken).ConfigureAwait(false);
-        var reader = new GTFSReader<GTFSFeed>();
-        var feed = reader.Read(zipFilePath);
-        return feed;
-    }
-    
-    private async Task<string> DownloadFeedAsync(string feedUrl, CancellationToken cancellationToken)
+    public async Task<string> DownloadFeedAsync(string feedUrl, CancellationToken cancellationToken)
     {
         var zipFileName = Path.GetFileName(feedUrl);
         var zipFilePath = Path.Combine(_gtfsFolderPath, zipFileName + ".zip");
@@ -60,6 +52,6 @@ public class SncbGtfsDataTask : ISncbGtfsDataTask
 
     public async Task ExecuteTaskAsync(CancellationToken stoppingToken)
     {
-        await GetPlanningDataAsync(stoppingToken);
+        await DownloadFeedAsync(_sncbGtfsUrl, stoppingToken);
     }
 }

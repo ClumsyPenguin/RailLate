@@ -15,7 +15,7 @@ public class TaskService(ITaskManager taskManager, IServiceProvider serviceProvi
     private readonly Dictionary<string ,TaskType> _taskTypes = new()
     {
         { nameof(SqlSyncTask), new TaskType(typeof(ISqlSyncTask), typeof(SqlSyncTask)) },
-        { nameof(SncbGtfsDataTask), new TaskType(typeof(ISncbGtfsDataTask), typeof(SncbGtfsDataTask)) },
+        { nameof(GtfsDataTask), new TaskType(typeof(IGtfsDataTask), typeof(GtfsDataTask)) },
     };
     
     public Task<List<TaskStatusResponse>> GetAllTasksAsync(CancellationToken cancellationToken)

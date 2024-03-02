@@ -9,7 +9,7 @@ public class PeriodicHostedWorker<TService>() : BackgroundService where TService
 {
     private readonly ILogger<PeriodicHostedWorker<TService>> _logger;
     private readonly IServiceScopeFactory _factory;
-    private readonly TimeSpan _period = TimeSpan.FromSeconds(5);
+    private readonly TimeSpan _period = TimeSpan.FromMinutes(30);
     private int _executionCount;
     
     public PeriodicHostedWorker(ILogger<PeriodicHostedWorker<TService>> logger, IServiceScopeFactory factory) : this()
