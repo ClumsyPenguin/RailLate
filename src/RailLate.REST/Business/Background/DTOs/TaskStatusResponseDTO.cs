@@ -1,4 +1,4 @@
-namespace RailLate.REST.Business.Background.Controllers.DTOs;
+namespace RailLate.REST.Business.Background.DTOs;
 
 public class TaskStatusResponseDTO
 {

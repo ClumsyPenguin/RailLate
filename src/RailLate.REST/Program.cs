@@ -3,6 +3,7 @@ using Mapster;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using RailLate.Application.Services.Realtime;
 using RailLate.Infrastructure;
 using RailLate.Infrastructure.DatabaseContext;
 using RailLate.REST;
@@ -17,6 +18,8 @@ builder.Services.AddCors(p => p.AddPolicy("cors-app", corsPolicyBuilder =>
 {
     corsPolicyBuilder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }));
+
+builder.Services.AddScoped<IRealTimeGtfsService, RealTimeGtfsService>();
 
 builder.Services.AddSingleton<IMapper, Mapper>();
 
@@ -52,6 +55,9 @@ builder.Services.AddMemoryCache();
 builder.Services.ConfigureRateLimiting();
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddGrpc();
+
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger();
@@ -77,5 +83,6 @@ app.UseResponseCaching();
 app.UseHttpCacheHeaders();
 app.UseAuthorization();
 app.MapControllers();
+app.MapGrpcService<RealTimeGtfsService>();
 
 app.Run();
