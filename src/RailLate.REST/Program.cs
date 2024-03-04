@@ -86,3 +86,5 @@ app.MapControllers();
 app.MapGrpcService<RealTimeGtfsService>();
 
 app.Run();
+
+public partial class Program {}
