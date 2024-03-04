@@ -19,6 +19,8 @@ builder.Services.AddCors(p => p.AddPolicy("cors-app", corsPolicyBuilder =>
     corsPolicyBuilder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }));
 
+//This whole DI sheningans should be cleaner
+
 builder.Services.AddScoped<IRealTimeGtfsService, RealTimeGtfsService>();
 
 builder.Services.AddSingleton<IMapper, Mapper>();
@@ -87,4 +89,5 @@ app.MapGrpcService<RealTimeGtfsService>();
 
 app.Run();
 
+//This enables to use WebApplicationFactory for smoke testing
 public partial class Program {}

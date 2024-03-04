@@ -1,7 +1,8 @@
-using Grpc.Net.Client;
 using GrpcRealTimeGtfsClient;
 namespace RailLate.Application.Services.Realtime;
 
+//TODO Add gRPC typed-client
+//TODO Cleaner handling of the realtime data errors
 public interface IRealTimeGtfsService
 {
     public Task<byte[]> FetchGtfsRealtimeDataAsync(string url, CancellationToken cancellationToken);

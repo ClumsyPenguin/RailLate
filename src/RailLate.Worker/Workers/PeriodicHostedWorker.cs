@@ -9,8 +9,8 @@ public class PeriodicHostedWorker<TService>() : BackgroundService where TService
 {
     private readonly ILogger<PeriodicHostedWorker<TService>> _logger;
     private readonly IServiceScopeFactory _factory;
-    private readonly TimeSpan _period = TimeSpan.FromMinutes(30);
-    private int _executionCount;
+    private readonly TimeSpan _period = TimeSpan.FromMinutes(30); //TODO add the possibility to set Cron parameters per task
+    private int _executionCount; //TODO add the tables in database to persists the execution count
     
     public PeriodicHostedWorker(ILogger<PeriodicHostedWorker<TService>> logger, IServiceScopeFactory factory) : this()
     {

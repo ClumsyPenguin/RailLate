@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace RailLate.Shared;
 
+//This probably gets deleted.
 public static class HttpExtensions
 {
     public static async Task<IActionResult> HandleRequestAsync<T>(HttpRequest req, IValidator validation,

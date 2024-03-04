@@ -5,11 +5,11 @@ using Agency = RailLate.Domain.Entities.Agency;
 
 namespace RailLate.Test.Integration.Infrastructure;
 
-public class IntegrationTest : IAsyncLifetime
+public abstract class IntegrationTest : IAsyncLifetime
 {
     private readonly MsSqlContainer _msSql = new MsSqlBuilder()
         .Build();
-    
+
     public Task InitializeAsync()
     {
         return _msSql.StartAsync();
@@ -19,17 +19,21 @@ public class IntegrationTest : IAsyncLifetime
     {
         return _msSql.DisposeAsync().AsTask();
     }
-    
-    [Fact]
-    public void ShouldReturnTwoCustomers()
+
+    internal EfContext GetContext()
     {
         var connectionString = _msSql.GetConnectionString();
         var options = new DbContextOptionsBuilder<EfContext>()
             .UseSqlServer(connectionString)
             .Options;
-        using var context = new EfContext(options);
+        return new EfContext(options);
+    }
+
+    internal void SeedData()
+    {
+        using var context = GetContext();
         context.Database.EnsureCreated();
-        
+
         context.Agencies.Add(new Agency
         {
             Id = Guid.NewGuid().ToString(),
@@ -41,8 +45,7 @@ public class IntegrationTest : IAsyncLifetime
             FareURL = "test-agency.com/fare",
             Email = "info@testagency.com"
         });
-        context.SaveChanges();
         
-        var agencies = context.Agencies.ToList();
+        //TODO Add more seed data here
     }
 }
