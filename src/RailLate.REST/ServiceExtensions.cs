@@ -50,7 +50,7 @@ public static class ServiceExtensions
         {
             c.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = "My Volcano API",
+                Title = "My RailLate API",
                 Version = "v1"
             });
             //c.EnableAnnotations();

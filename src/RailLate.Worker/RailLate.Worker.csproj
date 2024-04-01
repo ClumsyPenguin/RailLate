@@ -17,6 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\RailLate.Application\RailLate.Application.csproj" />
       <ProjectReference Include="..\RailLate.Infrastructure\RailLate.Infrastructure.csproj" />
     </ItemGroup>
 

@@ -1,25 +1,26 @@
 using AspNetCoreRateLimit;
-using Mapster;
+using Autofac.Extensions.DependencyInjection;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using RailLate.Application.Services.Realtime;
-using RailLate.Infrastructure;
 using RailLate.Infrastructure.DatabaseContext;
 using RailLate.REST;
+using RailLate.Shared.Caching;
 using RailLate.Worker;
 using RailLate.Worker.Services;
 using RailLate.Worker.Tasks;
+using RailLate.Worker.Tasks.PlanningData;
+using RailLate.Worker.Tasks.Realtime;
 using RailLate.Worker.Workers;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.Services.AddCors(p => p.AddPolicy("cors-app", corsPolicyBuilder =>
 {
     corsPolicyBuilder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }));
-
-//This whole DI sheningans should be cleaner
 
 builder.Services.AddScoped<IRealTimeGtfsService, RealTimeGtfsService>();
 
@@ -28,7 +29,8 @@ builder.Services.AddSingleton<IMapper, Mapper>();
 builder.Services.AddSingleton<ITaskService, TaskService>();
 
 builder.Services.AddSingleton<IGtfsDataTask, GtfsDataTask>();
-builder.Services.AddSingleton<ISqlSyncTask, SqlSyncTask>();
+builder.Services.AddSingleton<ISqlSyncTask, PlanningDataSyncTask>();
+builder.Services.AddSingleton<ISqlSyncTask, RealtimeDataSyncTask>();
 builder.Services.AddSingleton<IPeriodicTask>(provider => provider.GetRequiredService<IGtfsDataTask>());
 builder.Services.AddSingleton<IPeriodicTask>(provider => provider.GetRequiredService<ISqlSyncTask>());
 
@@ -43,23 +45,16 @@ builder.Services.AddSingleton<ITaskManager>(provider =>
     return new TaskManager(tasks);
 });
 
-builder.Services.Configure<DatabaseSettings>(
-    builder.Configuration.GetSection("Database"));
-
-builder.Services.AddDbContext<EfContext>((serviceProvider, options) =>
-{
-    var dbSettings = serviceProvider.GetRequiredService<IOptions<DatabaseSettings>>().Value;
-    options.UseSqlServer(dbSettings.ConnectionString);
+builder.Services.AddDbContext<EfContext>(options =>
+{ 
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MsSql"), 
+        sqlserverOptions => sqlserverOptions.CommandTimeout(3600));
 });
 
-builder.Services.ConfigureHttpCacheHeaders();
-builder.Services.AddMemoryCache();
+builder.Services.ConfigureCaching(builder.Configuration);
 builder.Services.ConfigureRateLimiting();
 builder.Services.AddHttpContextAccessor();
-
 builder.Services.AddGrpc();
-
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger();
@@ -80,9 +75,7 @@ if (app.Environment.IsDevelopment())
 app.UseIpRateLimiting();
 app.MapHealthChecks("/health");
 app.UseCors("cors-app");
-app.UseHttpsRedirection();
-app.UseResponseCaching();
-app.UseHttpCacheHeaders();
+app.UseHttpsRedirection(); 
 app.UseAuthorization();
 app.MapControllers();
 app.MapGrpcService<RealTimeGtfsService>();
@@ -90,4 +83,4 @@ app.MapGrpcService<RealTimeGtfsService>();
 app.Run();
 
 //This enables to use WebApplicationFactory for smoke testing
-public partial class Program {}
+public abstract partial class Program {}

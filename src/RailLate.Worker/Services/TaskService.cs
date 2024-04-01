@@ -1,4 +1,5 @@
 using RailLate.Worker.Tasks;
+using RailLate.Worker.Tasks.PlanningData;
 
 namespace RailLate.Worker.Services;
 
@@ -14,7 +15,7 @@ public class TaskService(ITaskManager taskManager, IServiceProvider serviceProvi
 {
     private readonly Dictionary<string ,TaskType> _taskTypes = new()
     {
-        { nameof(SqlSyncTask), new TaskType(typeof(ISqlSyncTask), typeof(SqlSyncTask)) },
+        { nameof(PlanningDataSyncTask), new TaskType(typeof(ISqlSyncTask), typeof(PlanningDataSyncTask)) },
         { nameof(GtfsDataTask), new TaskType(typeof(IGtfsDataTask), typeof(GtfsDataTask)) },
     };
     

@@ -1,4 +1,3 @@
-using GrpcRealTimeGtfsClient;
 using Microsoft.AspNetCore.Mvc;
 using RailLate.Application.Services.Realtime;
 
@@ -11,7 +10,7 @@ public class RealtimeController : ControllerBase
     
     private string RealTimeUrl =>
         "https://sncb-opendata.hafas.de/gtfs/realtime/c21ac6758dd25af84cca5b707f3cb3de";
-
+    
     public RealtimeController(IRealTimeGtfsService realTimeGtfsService)
     {
         _realTimeGtfsService = realTimeGtfsService;
@@ -20,8 +19,7 @@ public class RealtimeController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetRealTimeFeedAsync(CancellationToken cancellationToken)
     {
-        var resultBytes = await _realTimeGtfsService.FetchGtfsRealtimeDataAsync(RealTimeUrl, cancellationToken);
-        var result = _realTimeGtfsService.ParseGtfsRealtimeData(resultBytes);
+        var result = await _realTimeGtfsService.FetchGtfsRealtimeDataAsync(RealTimeUrl, cancellationToken);
         return Ok(result);
     }
 }
